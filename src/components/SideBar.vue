@@ -33,8 +33,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/style/mixins';
-
 .side-bar {
   width: 100%;
   height: 100%;
@@ -53,7 +51,7 @@ export default {
     transition: 0.2s;
     cursor: pointer;
     &:hover {
-      background: rgba($color: #ffffff, $alpha: 0.05);
+      background: rgba($color: #ffffff, $alpha: 0.03);
     }
     a {
       display: flex;
@@ -63,7 +61,7 @@ export default {
       height: 100%;
     }
     .router-link-exact-active {
-      background: $primary;
+      background: rgba($color: #ffffff, $alpha: 0.05);
     }
   }
 }

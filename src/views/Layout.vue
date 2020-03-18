@@ -33,7 +33,7 @@ export default {
   .layout-main {
     width: 100%;
     height: 100%;
-    padding: 40px;
+    padding: 20px 40px;
   }
 }
 </style>

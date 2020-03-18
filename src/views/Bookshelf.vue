@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import $db from '@/store/DB';
+
 export default {
   data() {
     return {
@@ -44,11 +46,14 @@ export default {
       const reader = new FileReader();
       const content = this;
       reader.readAsText(file, 'gb2312');
-      reader.onload = function() {
-        content.$store.commit('SaveBook', {
+      reader.onload = async e => {
+        let book = {
           title: file.name.split('.')[0],
-          content: this.result,
-        });
+          mark: [],
+          createdTime: new Date().toLocaleDateString(),
+        };
+        const id = await $db.setData({ ...book, content: e.target.result });
+        content.$store.commit('SaveBook', { ...book, id });
         content.reset = true;
         setTimeout(() => {
           content.reset = false;
@@ -64,8 +69,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/style/mixins';
-
 .bookshelf-wrap {
   .bookshelf-import {
     display: flex;
