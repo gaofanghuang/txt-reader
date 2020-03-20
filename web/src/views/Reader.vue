@@ -6,9 +6,9 @@
         <div id="content" class="reader-content-text" v-html="content"></div>
       </div>
       <div class="reader-bar">
-        <div class="reader-bar-left" @click="addMark">mark</div>
+        <!-- <div class="reader-bar-left" @click="addMark">mark</div> -->
         <div class="reader-bar-center" @click="showMenu = true">menu</div>
-        <div class="reader-bar-right">{{ process }}</div>
+        <!-- <div class="reader-bar-right">{{ process }}</div> -->
       </div>
 
       <transition name="fadeIn">
@@ -53,7 +53,7 @@ export default {
     async getContent() {
       const id = this.curBook.id;
       const book = await $db.getData(id);
-      this.content = book.content;
+      this.content = book.content.replace(/\n/g, '<br><div class="line"></div>');
     },
     scrollTo(no) {
       const theNo = document.querySelector(`#content div[data-no='${no}']`);

@@ -31,7 +31,7 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  base: '/pc/',
+  base: '/txt-reader/',
   routes,
 });
 

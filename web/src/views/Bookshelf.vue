@@ -56,8 +56,6 @@ export default {
         const menu = content.formatText(text);
         const rule = /第(.+?)章([\s\S]*?)\n/g;
         text = text.replace(rule, '<div data-no="$1">第$1章 $2</div><br>');
-        text = text.replace(/\n/g, '<br><div class="line"></div>');
-        console.log(menu);
         const id = await $db.setData({ ...book, content: text, menu });
         content.$store.commit('SaveBook', { ...book, id, menu });
         content.reset = true;
