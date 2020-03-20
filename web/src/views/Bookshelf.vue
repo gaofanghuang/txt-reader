@@ -73,7 +73,7 @@ export default {
       while ((result = rule.exec(text)) != null) {
         menu.push({
           name: result[0],
-          no: result[1]
+          no: result[1],
         });
       }
       return menu;

@@ -19,7 +19,7 @@ export default new Vuex.Store({
     DeleteBook(state, data) {
       let books = state.books;
       const id = data.id;
-      const newBooks = books.filter(item => item.id !== id)
+      const newBooks = books.filter(item => item.id !== id);
       state.books = newBooks;
       $storage.setData('books', newBooks);
     },

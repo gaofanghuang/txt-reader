@@ -48,9 +48,7 @@ export default {
       this.getContent();
     }
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     async getContent() {
       const id = this.curBook.id;

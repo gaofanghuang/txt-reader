@@ -7,7 +7,7 @@ const clearDB = () => {
   return new Promise((resolve, reject) => {
     db.destroy()
       .then(res => {
-        console.log('清除数据库', res);
+        // console.log('清除数据库', res);
         resolve(res);
       })
       .catch(function(err) {
@@ -22,7 +22,7 @@ const setData = params => {
   return new Promise((resolve, reject) => {
     db.post(params)
       .then(res => {
-        console.log('新增数据', res);
+        // console.log('新增数据', res);
         resolve(res.id);
       })
       .catch(function(err) {
@@ -37,7 +37,7 @@ const getData = params => {
   return new Promise((resolve, reject) => {
     db.get(params)
       .then(res => {
-        console.log('查询数据', res);
+        // console.log('查询数据', res);
         resolve(res);
       })
       .catch(function(err) {
@@ -55,7 +55,7 @@ const deleteData = params => {
         return db.remove(doc._id, doc._rev);
       })
       .then(res => {
-        console.log('删除数据', res);
+        // console.log('删除数据', res);
         resolve(res);
       })
       .catch(function(err) {
