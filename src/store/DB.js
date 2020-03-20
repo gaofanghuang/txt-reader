@@ -52,7 +52,7 @@ const deleteData = params => {
   return new Promise((resolve, reject) => {
     db.get(params)
       .then(function(doc) {
-        return db.remove(doc);
+        return db.remove(doc._id, doc._rev);
       })
       .then(res => {
         console.log('删除数据', res);

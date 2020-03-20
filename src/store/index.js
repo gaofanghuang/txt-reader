@@ -16,6 +16,13 @@ export default new Vuex.Store({
       state.books = books;
       $storage.setData('books', books);
     },
+    DeleteBook(state, data) {
+      let books = state.books;
+      const id = data.id;
+      const newBooks = books.filter(item => item.id !== id)
+      state.books = newBooks;
+      $storage.setData('books', newBooks);
+    },
     SaveCurBook(state, data) {
       state.curBook = data;
       $storage.setData('curBook', data);

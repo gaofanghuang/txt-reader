@@ -9,14 +9,14 @@
     <div class="bookshelf-books">
       <div
         class="bookshelf-book-item"
-        @click="readerItem(index)"
         v-for="(item, index) in books"
         :key="item.title + '-' + item.createdTime"
       >
-        <div class="bookshelf-book-cover"></div>
-        <div class="bookshelf-book-info">
+        <div class="bookshelf-book-info" @click="readerItem(index)">
+          <div class="bookshelf-book-dot"></div>
           <div class="bookshelf-book-title">{{ item.title }}</div>
         </div>
+        <span class="bookshelf-book-delete" @click="deleteBook(item.id)">删除</span>
       </div>
     </div>
   </div>
@@ -47,22 +47,44 @@ export default {
       const content = this;
       reader.readAsText(file, 'gb2312');
       reader.onload = async e => {
-        let book = {
+        const book = {
           title: file.name.split('.')[0],
           mark: [],
           createdTime: new Date().toLocaleDateString(),
         };
-        const id = await $db.setData({ ...book, content: e.target.result });
-        content.$store.commit('SaveBook', { ...book, id });
+        let text = e.target.result;
+        const menu = content.formatText(text);
+        const rule = /第(.+?)章([\s\S]*?)\n/g;
+        text = text.replace(rule, '<div data-no="$1">第$1章 $2</div><br>');
+        text = text.replace(/\n/g, '<br><div class="line"></div>');
+        console.log(menu);
+        const id = await $db.setData({ ...book, content: text, menu });
+        content.$store.commit('SaveBook', { ...book, id, menu });
         content.reset = true;
         setTimeout(() => {
           content.reset = false;
         });
       };
     },
+    formatText(text) {
+      const rule = /第(.+?)章([\s\S]*?)\n/g;
+      const menu = [];
+      let result;
+      while ((result = rule.exec(text)) != null) {
+        menu.push({
+          name: result[0],
+          no: result[1]
+        });
+      }
+      return menu;
+    },
     readerItem(index) {
       this.$store.commit('SaveCurBook', this.books[index]);
       this.$router.push('/reader');
+    },
+    async deleteBook(id) {
+      this.$store.commit('DeleteBook', { id });
+      const res = await $db.deleteData(id);
     },
   },
 };
@@ -107,17 +129,23 @@ export default {
     margin-top: 40px;
   }
   .bookshelf-book-item {
+    transition: 0.2s;
+    border-radius: 4px;
+    position: relative;
+    &:hover {
+      background: #f2f2f2;
+      .bookshelf-book-delete {
+        display: block;
+      }
+    }
+  }
+  .bookshelf-book-info {
     padding: 20px 0;
     display: flex;
     align-items: center;
     cursor: pointer;
-    transition: 0.2s;
-    border-radius: 4px;
-    &:hover {
-      background: #f2f2f2;
-    }
   }
-  .bookshelf-book-cover {
+  .bookshelf-book-dot {
     width: 10px;
     height: 10px;
     flex-shrink: 0;
@@ -125,6 +153,15 @@ export default {
     background: #e5e5e5;
     margin-right: 20px;
     margin-left: 20px;
+  }
+  .bookshelf-book-delete {
+    display: none;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $error;
+    cursor: pointer;
   }
 }
 </style>
