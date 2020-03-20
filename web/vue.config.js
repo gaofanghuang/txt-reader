@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '/',
+  publicPath: '/txt-reader/',
   outputDir: '../',
   assetsDir: 'static',
   lintOnSave: true,
