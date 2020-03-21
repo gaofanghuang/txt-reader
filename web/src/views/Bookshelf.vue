@@ -29,13 +29,15 @@ export default {
   data() {
     return {
       reset: false,
-      newTxt: '',
     };
   },
   computed: {
     books() {
       return this.$store.state.books;
     },
+  },
+  created() {
+    // this.getList();
   },
   methods: {
     importFile() {
@@ -49,15 +51,14 @@ export default {
       reader.onload = async e => {
         const book = {
           title: file.name.split('.')[0],
-          mark: [],
           createdTime: new Date().toLocaleDateString(),
         };
         let text = e.target.result;
         const menu = content.formatText(text);
         const rule = /第(.+?)章([\s\S]*?)\n/g;
         text = text.replace(rule, '<div data-no="$1">第$1章 $2</div><br>');
-        const id = await $db.setData({ ...book, content: text, menu });
-        content.$store.commit('SaveBook', { ...book, id, menu });
+        const id = await $db.add({ ...book, content: text, menu, mark: [] });
+        content.$store.commit('SaveBook', { ...book, id });
         content.reset = true;
         setTimeout(() => {
           content.reset = false;
@@ -65,7 +66,7 @@ export default {
       };
     },
     formatText(text) {
-      const rule = /第(.+?)章([\s\S]*?)\n/g;
+      const rule = /第(.+?)章\s([\s\S]*?)\n/g;
       const menu = [];
       let result;
       while ((result = rule.exec(text)) != null) {
@@ -77,12 +78,17 @@ export default {
       return menu;
     },
     readerItem(index) {
-      this.$store.commit('SaveCurBook', this.books[index]);
+      this.$store.commit('toCurBid', this.books[index].id);
       this.$router.push('/reader');
     },
     async deleteBook(id) {
       this.$store.commit('DeleteBook', { id });
-      const res = await $db.deleteData(id);
+      const res = await $db.remove(id);
+      console.log(res);
+    },
+    async getList() {
+      const res = await $db.all();
+      console.log(res);
     },
   },
 };

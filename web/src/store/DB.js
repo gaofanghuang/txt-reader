@@ -3,29 +3,48 @@ import PouchDB from 'pouchdb';
 const db = new PouchDB('txtReader');
 
 // 清除数据库
-const clearDB = () => {
+const clear = () => {
   return new Promise((resolve, reject) => {
     db.destroy()
       .then(res => {
-        // console.log('清除数据库', res);
         resolve(res);
       })
-      .catch(function(err) {
+      .catch(err => {
         console.log(err);
         reject(err);
       });
   });
 };
 
-// 增加数据
-const setData = params => {
+// 修改数据
+const updated = (id, params) => {
+  return new Promise((resolve, reject) => {
+    db.get(id)
+      .then(function(doc) {
+        console.log(doc);
+        doc.mark = params.mark;
+        return db.put({
+          ...doc,
+        });
+      })
+      .then(res => {
+        resolve(res.id);
+      })
+      .catch(err => {
+        console.log(err);
+        reject(err);
+      });
+  });
+};
+
+// 新增数据
+const add = params => {
   return new Promise((resolve, reject) => {
     db.post(params)
       .then(res => {
-        // console.log('新增数据', res);
         resolve(res.id);
       })
-      .catch(function(err) {
+      .catch(err => {
         console.log(err);
         reject(err);
       });
@@ -33,14 +52,14 @@ const setData = params => {
 };
 
 // 获取数据
-const getData = params => {
+const get = params => {
   return new Promise((resolve, reject) => {
     db.get(params)
       .then(res => {
-        // console.log('查询数据', res);
+        console.log(res);
         resolve(res);
       })
-      .catch(function(err) {
+      .catch(err => {
         console.log(err);
         reject(err);
       });
@@ -48,17 +67,33 @@ const getData = params => {
 };
 
 // 删除数据
-const deleteData = params => {
+const remove = params => {
   return new Promise((resolve, reject) => {
     db.get(params)
       .then(function(doc) {
         return db.remove(doc._id, doc._rev);
       })
       .then(res => {
-        // console.log('删除数据', res);
         resolve(res);
       })
-      .catch(function(err) {
+      .catch(err => {
+        console.log(err);
+        reject(err);
+      });
+  });
+};
+
+// 所有数据
+const all = () => {
+  return new Promise((resolve, reject) => {
+    db.allDocs({
+      include_docs: true,
+      attachments: true,
+    })
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
         console.log(err);
         reject(err);
       });
@@ -66,8 +101,10 @@ const deleteData = params => {
 };
 
 export default {
-  clearDB,
-  setData,
-  getData,
-  deleteData,
+  clear,
+  add,
+  updated,
+  get,
+  remove,
+  all,
 };

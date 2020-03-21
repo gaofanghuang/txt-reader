@@ -7,7 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     books: $storage.getData('books') || [],
-    curBook: $storage.getData('curBook') || null,
+    curBid: $storage.getData('curBid') || '',
   },
   mutations: {
     SaveBook(state, data) {
@@ -23,9 +23,9 @@ export default new Vuex.Store({
       state.books = newBooks;
       $storage.setData('books', newBooks);
     },
-    SaveCurBook(state, data) {
-      state.curBook = data;
-      $storage.setData('curBook', data);
+    toCurBid(state, data) {
+      state.curBid = data;
+      $storage.setData('curBid', data);
     },
   },
   actions: {},
